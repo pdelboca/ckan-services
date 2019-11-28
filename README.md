@@ -50,3 +50,6 @@ sqlalchemy.url = postgresql://ckan_default:pass@localhost/ckan_test
 ckan.datastore.write_url = postgresql://ckan_default:pass@localhost/datastore_test
 ckan.datastore.read_url = postgresql://datastore_default:pass@localhost/datastore_test
 ```
+## Environment Variables
+
+So far there is only one SOLR_USER, so copy `.env.template` and rename it `.env`
