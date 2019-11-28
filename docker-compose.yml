@@ -1,0 +1,47 @@
+# docker-compose build && docker-compose up -d
+# If "docker-compose logs ckan" shows DB not ready, run "docker-compose restart ckan" a few times.
+version: "3"
+
+volumes:
+  #pg_data:
+  solr_data:
+
+services:
+  datapusher:
+    container_name: datapusher
+    image: clementmouchet/datapusher
+    ports:
+      - "8800:8800"
+
+  db:
+    container_name: db
+    build:
+      context: ./
+      dockerfile: postgresql/Dockerfile
+    #volumes:
+    #  - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+    environment:
+      - POSTGRES_NON_DURABLE_SETTINGS=1
+    ports:
+      - "5432:5432"
+
+  solr:
+    container_name: solr
+    build:
+      context: ./
+      dockerfile: solr/Dockerfile
+    volumes:
+      - solr_data:/opt/solr/server/solr/ckan/data
+    ports:
+      - "8983:8983"
+    environment:
+      - SOLR_USER=solr
+
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
