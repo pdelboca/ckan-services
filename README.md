@@ -56,6 +56,10 @@ So far there is only one SOLR_USER, so copy `.env.template` and rename it `.env`
 
 # How to do a source install for Python 2.7
 
+I **strongly** recommend to read the [oficial guideline](https://docs.ckan.org/en/latest/maintaining/installing/install-from-source.html) to get a sense of what are we going to do.
+
+Be sure that you have all the ubuntu packages installed as described [here](https://docs.ckan.org/en/latest/maintaining/installing/install-from-source.html#install-the-required-packages).
+
 * clone the repository: `git clone https://github.com/ckan/ckan.git`
 * Create a virtualenv: `virtualenv --python=/usr/bin/python2.7 --no-site-packages <virtual_env_directory>`
 * Activate the virtualenv
