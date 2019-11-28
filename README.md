@@ -53,3 +53,19 @@ ckan.datastore.read_url = postgresql://datastore_default:pass@localhost/datastor
 ## Environment Variables
 
 So far there is only one SOLR_USER, so copy `.env.template` and rename it `.env`
+
+# How to do a source install for Python 2.7
+
+* clone the repository: `git clone https://github.com/ckan/ckan.git`
+* Create a virtualenv: `virtualenv --python=/usr/bin/python2.7 --no-site-packages <virtual_env_directory>`
+* Activate the virtualenv
+* cd into the repository
+* Install requirementes `pip install -r requirements-py2.txt` and `pip install -r dev-requirements.txt`
+* Install ckan from the cloned repository executing: `python setup.py development`
+* Create a config file using: `paster make-config ckan development.ini`
+* Initialize the databases: `paster db init -c development.ini`
+* Run a local serve: `paster serve development.ini --reload`
+
+To run tests:
+ * Initialize tests databases: `paster db init -c test-core.ini`
+ * Run tests: `nosetests --with-pylons=test-core.ini ckan`
