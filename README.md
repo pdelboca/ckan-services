@@ -65,7 +65,7 @@ Be sure that you have all the ubuntu packages installed as described [here](http
 * Activate the virtualenv
 * cd into the repository
 * Install requirementes `pip install -r requirements-py2.txt` and `pip install -r dev-requirements.txt`
-* Install ckan from the cloned repository executing: `python setup.py development`
+* Install ckan from the cloned repository executing: `python setup.py develop`
 * Create a config file using: `paster make-config ckan development.ini`
 * Initialize the databases: `paster db init -c development.ini`
 * Run a local serve: `paster serve development.ini --reload`
