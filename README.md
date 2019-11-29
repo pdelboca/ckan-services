@@ -70,6 +70,8 @@ Be sure that you have all the ubuntu packages installed as described [here](http
 * Edit `development.ini` file and add a name for `ckan.site_url` like `http://ckan:5000` (ckan will need to be added to your `/etc/hosts` file!)
 * Edit `development.ini` file to add the solr url: `solr_url = http://127.0.0.1:8983/solr/ckan`
 * Initialize the databases: `paster db init -c development.ini`
+* You can add a user to the system using: `paster --plugin=ckan user add admin password=12345678 email=admin@admin.org -c development.ini && paster --plugin=ckan sysadmin add admin -c development.ini`
+	paster --plugin=ckan sysadmin add admin -c ckan/development.ini`
 * Run a local serve: `paster serve development.ini --reload`
 
 To run tests:
