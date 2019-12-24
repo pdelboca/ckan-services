@@ -75,4 +75,4 @@ Be sure that you have all the ubuntu packages installed as described [here](http
 
 To run tests:
  * Initialize tests databases: `paster db init -c test-core.ini`
- * Run tests: `nosetests --with-pylons=test-core.ini ckan`
+ * Run tests: `python -m pytest --ckan-ini=test-core.ini`
