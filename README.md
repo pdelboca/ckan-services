@@ -74,7 +74,7 @@ Be sure that you have all the ubuntu packages installed as described [here](http
 * Edit `development.ini` file to add the solr url: `solr_url = http://127.0.0.1:8983/solr/ckan`
 * Initialize the databases:
   * Python 2: `paster db init -c development.ini`
-  * Python 2: `ckan db init`
+  * Python 3: `ckan db init`
 * You can add a user to the system using:
   * Python 2: `paster --plugin=ckan user add admin password=12345678 email=admin@admin.org -c development.ini && paster --plugin=ckan sysadmin add admin -c development.ini`
   * Python 3: `ckan user add admin password=12345678 email=admin@admin.org && ckan sysadmin add admin`
