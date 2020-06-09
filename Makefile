@@ -6,6 +6,7 @@ TEST_PATH :=
 PASTER := paster
 SHELL := bash
 SUDO :=
+CKAN := ckan
 
 down:
 	docker-compose down
@@ -25,12 +26,19 @@ bash-db:
 bash-solr:
 	docker exec -it solr /bin/bash
 
-add-users: | _check_virtualenv
+add-users-py2: | _check_virtualenv
 	$(PASTER) --plugin=ckan user add admin password=12345678 email=admin@example.org -c $(CKAN_CONFIG_FILE)
 
-start: | _check_virtualenv
+add-users: | _check_virtualenv
+	$(CKAN) -c $(CKAN_CONFIG_FILE) user add admin password=12345678 email=admin@example.org
+
+start-py2: | _check_virtualenv
 	$(PASTER) --plugin=ckan db init -c $(CKAN_CONFIG_FILE)
 	$(PASTER) --plugin=ckan serve --reload $(CKAN_CONFIG_FILE)
+
+start: | _check_virtualenv
+	$(CKAN) -c $(CKAN_CONFIG_FILE) db init
+	$(CKAN) run --reloader $(CKAN_CONFIG_FILE)
 
 tests-py2:
 	$(PASTER) --plugin=ckan db init -c $(CKAN_TEST_CONFIG_FILE)  && \
