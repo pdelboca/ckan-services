@@ -32,7 +32,9 @@ After clonning the repo:
   * A `ckan_admin` user with password `test1234`
   * A `test_user` user with password `12345678`
 * Execute `make start` to start CKAN.
-* You can also execute `make test` to run the CKAN Core tests.
+* You can also execute `make test` to run the CKAN Core tests with `TEST_FOLDER := ../ckan/ckan/tests`:
+  * `make test` to run all tests
+  * `make test TEST_PATH=folder/test_file.py` to run all the tests of a specific file.
 
 ## More Help
 
