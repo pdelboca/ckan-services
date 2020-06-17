@@ -5,14 +5,16 @@ SHELL := bash
 SUDO :=
 CKAN := ckan
 PYTEST := pytest
-NOSETESTS = nosetests
+NOSETESTS := nosetests
+PIP := pip
 # Find GNU sed in path (on OS X gsed should be preferred)
 SED := $(shell which gsed sed | head -n1)
 
-# Config files path
-CKAN_CONFIG_FILE := ../ckan/development.ini
+# CKAN paths
+CKAN_PATH := ../ckan
+CKAN_CONFIG_FILE := ../ckan/ckan.ini
 CKAN_TEST_CONFIG_FILE := ../ckan/test-core.ini
-TEST_FOLDER := ../ckan/ckan/tests/
+TEST_FOLDER := ../ckan/ckan/tests
 TEST_PATH :=
 
 # These are used in creating .env
@@ -27,6 +29,39 @@ DATASTORE_TEST_DB_NAME := datastore_test
 DATASTORE_DB_RO_USER := datastore_default
 DATASTORE_DB_RO_PASSWORD := pass
 
+## Install CKAN Requirements
+install-requirements: | _check_virtualenv
+	$(PIP) install -r $(CKAN_PATH)/requirement-setuptools.txt -r $(CKAN_PATH)/dev-requirements.txt -r $(CKAN_PATH)/requirements.txt
+
+## Install CKAN
+install-ckan: | _check_virtualenv
+	$(PIP) install -e $(CKAN_PATH)
+	$(CKAN) generate config $(CKAN_PATH)/ckan.ini
+
+## Add admin user to the local instance
+add-users: | _check_virtualenv
+	$(CKAN) -c $(CKAN_CONFIG_FILE) user add admin password=12345678 email=admin@example.org
+.PHONY: add-users
+
+## Start the CKAN development server
+start: | _check_virtualenv
+	$(CKAN) -c $(CKAN_CONFIG_FILE) db init
+	$(CKAN) -c $(CKAN_CONFIG_FILE) run
+.PHONY: start
+
+## Run the CKAN Core tests
+test: | _check_virtualenv
+	$(CKAN) -c $(CKAN_TEST_CONFIG_FILE) db init
+	$(PYTEST) --ckan-ini=$(CKAN_TEST_CONFIG_FILE) -ra $(TEST_FOLDER)/$(TEST_PATH)
+.PHONY: test
+
+_check_virtualenv:
+	@if [ -z "$(VIRTUAL_ENV)" ]; then \
+	  echo "You are not in a virtual environment - activate your virtual environment first"; \
+	  exit 1; \
+	fi
+
+################## DOCKER SERVICES ##################
 .env:
 	@___POSTGRES_USER=$(POSTGRES_USER) \
 	___POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
@@ -78,26 +113,6 @@ docker-bash-solr:
 	$(DOCKER_COMPOSE) exec -it solr /bin/bash
 .PHONY: docker-bash-solr
 
-add-users: | _check_virtualenv
-	$(CKAN) -c $(CKAN_CONFIG_FILE) user add admin password=12345678 email=admin@example.org
-.PHONY: add-users
-
-start: | _check_virtualenv
-	$(CKAN) -c $(CKAN_CONFIG_FILE) db init
-	$(CKAN) -c $(CKAN_CONFIG_FILE) run
-.PHONY: start
-
-test: | _check_virtualenv
-	$(CKAN) -c $(CKAN_TEST_CONFIG_FILE) db init
-	$(PYTEST) --ckan-ini=$(CKAN_TEST_CONFIG_FILE) -ra $(TEST_FOLDER)$(TEST_PATH)
-.PHONY: test
-
-_check_virtualenv:
-	@if [ -z "$(VIRTUAL_ENV)" ]; then \
-	  echo "You are not in a virtual environment - activate your virtual environment first"; \
-	  exit 1; \
-	fi
-
 #############################################
 # TO BE REMOVED WHEN DEPRECATING Python 2
 
@@ -112,10 +127,10 @@ add-users-py2: | _check_virtualenv
 
 tests-py2:
 	$(PASTER) --plugin=ckan db init -c $(CKAN_TEST_CONFIG_FILE)  && \
-	$(NOSETESTS) --ckan --reset-db --nologcapture -v --with-pylons=$(CKAN_TEST_CONFIG_FILE) $(TEST_FOLDER)$(TEST_PATH) --with-id
+	$(NOSETESTS) --ckan --reset-db --nologcapture -v --with-pylons=$(CKAN_TEST_CONFIG_FILE) $(TEST_FOLDER)/$(TEST_PATH) --with-id
 .PHONY: tests-py2
 
 failed-tests-py2:
 	$(PASTER) --plugin=ckan db init -c $(CKAN_TEST_CONFIG_FILE)  && \
-	$(NOSETESTS) --ckan --reset-db --nologcapture -v --with-pylons=$(CKAN_TEST_CONFIG_FILE) $(TEST_FOLDER)$(TEST_PATH) --failed
+	$(NOSETESTS) --ckan --reset-db --nologcapture -v --with-pylons=$(CKAN_TEST_CONFIG_FILE) $(TEST_FOLDER)/$(TEST_PATH) --failed
 .PHONY: failed-tests-py2
