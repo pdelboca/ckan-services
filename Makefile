@@ -98,21 +98,50 @@ docker-down: .env
 	$(DOCKER_COMPOSE) down
 .PHONY: docker-down
 
+## Remove all Docker services and remove the volumes
 docker-remove:
 	$(DOCKER_COMPOSE) down -v
 .PHONY: docker-remove
 
+## Build the docker-compose.yml file
 docker-build:
 	$(DOCKER_COMPOSE) build
 .PHONY: docker-build
 
+## Open an interactive terminal in the db container
 docker-bash-db:
 	$(DOCKER_COMPOSE) exec -it db /bin/bash
 .PHONY: docker-bash-db
 
+## Open an interactive terminal in the solr container
 docker-bash-solr:
 	$(DOCKER_COMPOSE) exec -it solr /bin/bash
 .PHONY: docker-bash-solr
+
+# Help related variables and targets
+
+GREEN  := $(shell tput -Txterm setaf 2)
+YELLOW := $(shell tput -Txterm setaf 3)
+WHITE  := $(shell tput -Txterm setaf 7)
+RESET  := $(shell tput -Txterm sgr0)
+TARGET_MAX_CHAR_NUM := 20
+
+## Show help
+help:
+	@echo ''
+	@echo 'Usage:'
+	@echo '  ${YELLOW}make${RESET} ${GREEN}<target>${RESET}'
+	@echo ''
+	@echo 'Targets:'
+	@awk '/^[a-zA-Z\-\_0-9]+:/ { \
+	  helpMessage = match(lastLine, /^## (.*)/); \
+	  if (helpMessage) { \
+	    helpCommand = substr($$1, 0, index($$1, ":")-1); \
+	    helpMessage = substr(lastLine, RSTART + 3, RLENGTH); \
+	    printf "  ${YELLOW}%-$(TARGET_MAX_CHAR_NUM)s${RESET} ${GREEN}%s${RESET}\n", helpCommand, helpMessage; \
+	  } \
+	} \
+	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
 #############################################
 # TO BE REMOVED WHEN DEPRECATING Python 2

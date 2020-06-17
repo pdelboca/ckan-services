@@ -30,3 +30,7 @@ After clonning the repo:
 * Execute `make add-users` to add an admin user with password 12345678 to the system
 * Execute `make start` to start CKAN.
 * You can also execute `make test` to run the CKAN Core tests.
+
+## More Help
+
+Execute `make help` to see other useful commands.
