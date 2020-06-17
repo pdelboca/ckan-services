@@ -41,6 +41,7 @@ install-ckan: | _check_virtualenv
 ## Add admin user to the local instance
 add-users: | _check_virtualenv
 	$(CKAN) -c $(CKAN_CONFIG_FILE) user add admin password=12345678 email=admin@example.org
+	$(CKAN) -c $(CKAN_CONFIG_FILE) sysadmin add admin
 .PHONY: add-users
 
 ## Start the CKAN development server
