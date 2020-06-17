@@ -25,6 +25,7 @@ After clonning the repo:
 * Edit the `ckan.ini` file to:
   * Add the config variable `ckan.site_url`
   * Change the `solr_url` config to `solr_url = http://127.0.0.1:8983/solr/ckan`
+  * Change the debug variable to `true`
 * Execute `make docker-up` to start the services.
 * Execute `make add-users` to add an admin user with password 12345678 to the system
 * Execute `make start` to start CKAN.
