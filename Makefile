@@ -42,6 +42,9 @@ install-ckan: | _check_virtualenv
 add-users: | _check_virtualenv
 	$(CKAN) -c $(CKAN_CONFIG_FILE) user add admin password=12345678 email=admin@example.org
 	$(CKAN) -c $(CKAN_CONFIG_FILE) sysadmin add admin
+	$(CKAN) -c $(CKAN_CONFIG_FILE) user add ckan_admin password=test1234 email=ckan_admin@example.org
+	$(CKAN) -c $(CKAN_CONFIG_FILE) sysadmin add ckan_admin
+	$(CKAN) -c $(CKAN_CONFIG_FILE) user add test_user password=12345678 email=test_user@example.org
 .PHONY: add-users
 
 ## Start the CKAN development server
@@ -91,6 +94,7 @@ docker-up: .env
     	GRANT ALL PRIVILEGES ON DATABASE $(DATASTORE_TEST_DB_NAME) TO $(POSTGRES_USER);  \
     	GRANT ALL PRIVILEGES ON DATABASE $(CKAN_TEST_DB) TO $(POSTGRES_USER);  \
     " | $(DOCKER_COMPOSE) exec -T db psql --username "$(POSTGRES_USER)"
+	$(CKAN) -c $(CKAN_CONFIG_FILE) db init
 .PHONY: docker-up
 
 ## Stop all Docker services
