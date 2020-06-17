@@ -1,47 +1,37 @@
-# docker-compose build && docker-compose up -d
-# If "docker-compose logs ckan" shows DB not ready, run "docker-compose restart ckan" a few times.
+# Docker Compose file for ckan development
+# ------------------------------------------------
+# The purpose of this docker-compose file is to simplify setting up a
+# development environment for CKAN. It defines Docker based
+# services for all external CKAN dependencies (DB, Solr, Redis) but not for
+# CKAN itself - you should probably run CKAN in a local virtual environment
+# to simplify debugging.
+
 version: "3"
 
 volumes:
-  #pg_data:
-  solr_data:
+  db_data:
 
 services:
-  datapusher:
-    container_name: datapusher
-    image: clementmouchet/datapusher
-    ports:
-      - "8800:8800"
 
   db:
-    container_name: db
-    build:
-      context: ./
-      dockerfile: postgresql/Dockerfile
-    #volumes:
-    #  - pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
-    environment:
-      - POSTGRES_NON_DURABLE_SETTINGS=1
+    image: postgres:9-alpine
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CKAN_DB=${CKAN_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
   solr:
-    container_name: solr
-    build:
-      context: ./
-      dockerfile: solr/Dockerfile
-    volumes:
-      - solr_data:/opt/solr/server/solr/ckan/data
-    ports:
-      - "8983:8983"
+    image: ckan/solr
     environment:
-      - SOLR_USER=solr
-
+      - CKAN_SOLR_PASSWORD=${CKAN_SOLR_PASSWORD}
+    ports:
+      - 8983:8983
 
   redis:
-    container_name: redis
     image: redis:latest
     ports:
-      - "6379:6379"
+      - 6379:6379
