@@ -122,6 +122,11 @@ docker-bash-solr:
 	$(DOCKER_COMPOSE) exec -it solr /bin/bash
 .PHONY: docker-bash-solr
 
+## Set up Datastore
+setup-datastore: | _check_virtualenv
+	$(CKAN) -c $(CKAN_CONFIG_FILE) datastore set-permissions \
+	| $(DOCKER_COMPOSE) exec -T db psql --username "$(POSTGRES_USER)" --set ON_ERROR_STOP=1
+
 # Help related variables and targets
 
 GREEN  := $(shell tput -Txterm setaf 2)
