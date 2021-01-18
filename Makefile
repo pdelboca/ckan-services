@@ -56,7 +56,7 @@ start: | _check_virtualenv
 ## Run the CKAN Core tests
 test: | _check_virtualenv
 	$(CKAN) -c $(CKAN_TEST_CONFIG_FILE) db init
-	$(PYTEST) --ckan-ini=$(CKAN_TEST_CONFIG_FILE) -ra $(TEST_FOLDER)/$(TEST_PATH)
+	$(PYTEST) --ckan-ini=$(CKAN_TEST_CONFIG_FILE) -ra -s $(TEST_FOLDER)/$(TEST_PATH)
 .PHONY: test
 
 _check_virtualenv:
