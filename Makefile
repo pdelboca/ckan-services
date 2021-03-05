@@ -7,6 +7,7 @@ CKAN := ckan
 PYTEST := pytest
 NOSETESTS := nosetests
 PIP := pip
+FLAKE8 := flake8
 # Find GNU sed in path (on OS X gsed should be preferred)
 SED := $(shell which gsed sed | head -n1)
 
@@ -65,6 +66,10 @@ _check_virtualenv:
 	  exit 1; \
 	fi
 
+## Run Flake8
+flake8: | _check_virtualenv
+	flake8 $(CKAN_PATH) --count --select=E9,F63,F7,F82 --show-source --statistics --exclude '$(CKAN_PATH)/ckan/include/rjsmin.py,$(CKAN_PATH)/contrib/cookiecutter/*,$(CKAN_PATH)/.eggs/*,$(CKAN_PATH)/.git/*'
+
 ################## DOCKER SERVICES ##################
 .env:
 	@___POSTGRES_USER=$(POSTGRES_USER) \
@@ -94,7 +99,6 @@ docker-up: .env
     	GRANT ALL PRIVILEGES ON DATABASE $(DATASTORE_TEST_DB_NAME) TO $(POSTGRES_USER);  \
     	GRANT ALL PRIVILEGES ON DATABASE $(CKAN_TEST_DB) TO $(POSTGRES_USER);  \
     " | $(DOCKER_COMPOSE) exec -T db psql --username "$(POSTGRES_USER)"
-	$(CKAN) -c $(CKAN_CONFIG_FILE) db init
 .PHONY: docker-up
 
 ## Stop all Docker services
@@ -162,6 +166,7 @@ start-py2: | _check_virtualenv
 
 add-users-py2: | _check_virtualenv
 	$(PASTER) --plugin=ckan user add admin password=12345678 email=admin@example.org -c $(CKAN_CONFIG_FILE)
+	$(PASTER) --plugin=ckan sysadmin add admin -c $(CKAN_CONFIG_FILE)
 .PHONY: add-users-py2
 
 tests-py2:
