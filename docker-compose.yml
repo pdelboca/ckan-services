@@ -12,25 +12,16 @@ volumes:
   db_data:
 
 services:
-
   db:
-    image: postgres:9-alpine
+    image: ckan/ckan-postgres-dev:master
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - CKAN_DB=${CKAN_DB}
     volumes:
       - db_data:/var/lib/postgresql/data
-
   solr:
-    image: ckan/solr
-    environment:
-      - CKAN_SOLR_PASSWORD=${CKAN_SOLR_PASSWORD}
+    image: ckan/ckan-solr-dev:master
     ports:
       - 8983:8983
-
   redis:
     image: redis:latest
     ports:
