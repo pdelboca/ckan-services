@@ -86,7 +86,7 @@ flake8: | _check_virtualenv
 	@cat .env
 
 ## Start all Docker services
-docker-up: .env
+docker-services: .env
 	$(DOCKER_COMPOSE) up -d
 	@until $(DOCKER_COMPOSE) exec db pg_isready -U $(POSTGRES_USER); do sleep 1; done
 	@sleep 2
@@ -99,7 +99,7 @@ docker-up: .env
     	GRANT ALL PRIVILEGES ON DATABASE $(DATASTORE_TEST_DB_NAME) TO $(POSTGRES_USER);  \
     	GRANT ALL PRIVILEGES ON DATABASE $(CKAN_TEST_DB) TO $(POSTGRES_USER);  \
     " | $(DOCKER_COMPOSE) exec -T db psql --username "$(POSTGRES_USER)"
-.PHONY: docker-up
+.PHONY: docker-services
 
 ## Stop all Docker services
 docker-down: .env
