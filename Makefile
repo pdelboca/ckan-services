@@ -20,9 +20,9 @@ TEST_PATH :=
 
 # These are used in creating .env
 CKAN_SITE_URL := http://localhost:5000
-POSTGRES_USER := postgres
-POSTGRES_PASSWORD := postgres
-CKAN_DB := postgres
+POSTGRES_USER := ckan_default
+POSTGRES_PASSWORD := pass
+CKAN_DB := ckan_default
 CKAN_TEST_DB := ckan_test
 CKAN_SOLR_PASSWORD := ckan
 DATASTORE_DB_NAME := datastore_default
@@ -86,7 +86,7 @@ flake8: | _check_virtualenv
 	@cat .env
 
 ## Start all Docker services
-docker-services: .env
+docker-up: .env
 	$(DOCKER_COMPOSE) up -d
 	@until $(DOCKER_COMPOSE) exec db pg_isready -U $(POSTGRES_USER); do sleep 1; done
 	@sleep 2
@@ -99,7 +99,7 @@ docker-services: .env
     	GRANT ALL PRIVILEGES ON DATABASE $(DATASTORE_TEST_DB_NAME) TO $(POSTGRES_USER);  \
     	GRANT ALL PRIVILEGES ON DATABASE $(CKAN_TEST_DB) TO $(POSTGRES_USER);  \
     " | $(DOCKER_COMPOSE) exec -T db psql --username "$(POSTGRES_USER)"
-.PHONY: docker-services
+.PHONY: docker-up
 
 ## Stop all Docker services
 docker-down: .env
