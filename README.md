@@ -39,3 +39,32 @@ After clonning the repo:
 ## More Help
 
 Execute `make help` to see other useful commands.
+
+
+## Troubleshooting
+
+*terminating connection due to administrator command*:
+
+```
+make docker-services
+docker-compose up -d
+Creating network "ckan-services_default" with the default driver
+Creating volume "ckan-services_db_data" with default driver
+Creating ckan-services_redis_1 ... done
+Creating ckan-services_solr_1  ... done
+Creating ckan-services_db_1    ... done
+/var/run/postgresql:5432 - no response
+/var/run/postgresql:5432 - accepting connections
+CREATE ROLE
+CREATE DATABASE
+CREATE DATABASE
+FATAL:  terminating connection due to administrator command
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+connection to server was lost
+make: *** [Makefile:93: docker-services] Error 2
+```
+
+Just execute `make docker-services` again. This is happening when using the
+`postgis/postgis:11-3.1` image for the DB.
