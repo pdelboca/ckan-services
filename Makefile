@@ -54,6 +54,10 @@ start: | _check_virtualenv
 	$(CKAN) -c $(CKAN_CONFIG_FILE) run
 .PHONY: start
 
+## Reindex solr database
+index: | _check_virtualenv
+	$(CKAN) -c $(CKAN_CONFIG_FILE) search-index rebuild -r -i
+
 ## Run the CKAN Core tests
 test: | _check_virtualenv
 	$(CKAN) -c $(CKAN_TEST_CONFIG_FILE) db init
