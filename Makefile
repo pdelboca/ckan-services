@@ -135,6 +135,11 @@ setup-datastore: | _check_virtualenv
 	$(CKAN) -c $(CKAN_CONFIG_FILE) datastore set-permissions \
 	| $(DOCKER_COMPOSE) exec -T db psql --username "$(POSTGRES_USER)" --set ON_ERROR_STOP=1
 
+## Set up Datastore for Test Database
+setup-datastore-test: | _check_virtualenv
+	$(CKAN) -c $(CKAN_TEST_CONFIG_FILE) datastore set-permissions \
+	| $(DOCKER_COMPOSE) exec -T db psql --username "$(POSTGRES_USER)" --set ON_ERROR_STOP=1
+
 # Help related variables and targets
 
 GREEN  := $(shell tput -Txterm setaf 2)
