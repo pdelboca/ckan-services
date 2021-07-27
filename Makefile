@@ -164,26 +164,3 @@ help:
 	  } \
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
-
-#############################################
-# TO BE REMOVED WHEN DEPRECATING Python 2
-
-start-py2: | _check_virtualenv
-	$(PASTER) --plugin=ckan db init -c $(CKAN_CONFIG_FILE)
-	$(PASTER) --plugin=ckan serve --reload $(CKAN_CONFIG_FILE)
-.PHONY: start-py2
-
-add-users-py2: | _check_virtualenv
-	$(PASTER) --plugin=ckan user add admin password=12345678 email=admin@example.org -c $(CKAN_CONFIG_FILE)
-	$(PASTER) --plugin=ckan sysadmin add admin -c $(CKAN_CONFIG_FILE)
-.PHONY: add-users-py2
-
-tests-py2:
-	$(PASTER) --plugin=ckan db init -c $(CKAN_TEST_CONFIG_FILE)  && \
-	$(NOSETESTS) --ckan --reset-db --nologcapture -v --with-pylons=$(CKAN_TEST_CONFIG_FILE) $(TEST_FOLDER)/$(TEST_PATH) --with-id
-.PHONY: tests-py2
-
-failed-tests-py2:
-	$(PASTER) --plugin=ckan db init -c $(CKAN_TEST_CONFIG_FILE)  && \
-	$(NOSETESTS) --ckan --reset-db --nologcapture -v --with-pylons=$(CKAN_TEST_CONFIG_FILE) $(TEST_FOLDER)/$(TEST_PATH) --failed
-.PHONY: failed-tests-py2
