@@ -56,7 +56,7 @@ start: | _check_virtualenv
 
 ## Reindex solr database
 index: | _check_virtualenv
-	$(CKAN) -c $(CKAN_CONFIG_FILE) search-index rebuild -r -i
+	$(CKAN) -c $(CKAN_CONFIG_FILE) search-index rebuild -i
 
 ## Run the CKAN Core tests
 test: | _check_virtualenv
